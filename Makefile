@@ -78,8 +78,12 @@ init-db: start-db
 	bin/tools rm -rf var/cache/*
 	bin/tools bin/post-install-dev.sh
 
-fix-cs:
+fix-cs-php:
 	bin/tools vendor/bin/php-cs-fixer fix --allow-risky yes --verbose
+
+fix-cs: fix-cs-php
+	bin/node-tools npm run lint:fix
+	bin/node-tools npm run lint:css:fix
 
 #
 # TESTS
@@ -90,6 +94,8 @@ test: test-cs test-advanced test-unit
 test-cs:
 	bin/tools vendor/bin/php-cs-fixer fix --allow-risky yes --dry-run --verbose --diff
 	bin/tools bin/console --env=test lint:twig templates
+	bin/node-tools npm run lint
+	bin/node-tools npm run lint:css
 
 test-advanced:
 	bin/tools sh -c "APP_DEBUG=1 APP_ENV=test bin/console c:w"

@@ -55,10 +55,12 @@ final class ManageAvailabilityController extends AbstractController
 
         $end = $start->add(new \DateInterval('P7D'));
 
+        $blockedSlotsInterval = new \DateInterval('PT48H');
         $availabilitiesDomain = AvailabilitiesDomain::generate(
             $start,
             $end,
-            $this->userAvailabilityRepository->findBetweenDates($user, $start, $end)
+            $this->userAvailabilityRepository->findBetweenDates($user, $start, $end),
+            $blockedSlotsInterval
         );
 
         $form = $this
@@ -77,6 +79,7 @@ final class ManageAvailabilityController extends AbstractController
 
         return $this->render('user/availability.html.twig', [
             'form' => $form->createView(),
+            'blockedSlotsInterval' => $blockedSlotsInterval,
         ]);
     }
 }
